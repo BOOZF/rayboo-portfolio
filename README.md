@@ -1,20 +1,20 @@
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
 # rayboo-portfolio
-# rayboo-portfolio
-# rayboo-portfolio
-# rayboo-portfolio
+
+Ray Boo's 3D portfolio: walk a space bridge, step into project bubbles, and ask an AI assistant about Ray.
+
+Built with React, Vite and three.js; the "Ask about Ray" chat is a Vercel serverless function (`api/chat.js`) doing file-based RAG over `knowledge/*.md` with OpenAI.
+
+## Develop
+
+```bash
+pnpm install
+cp .env.example .env   # add OPENAI_API_KEY
+pnpm dev               # site + /api/chat on http://localhost:5173
+pnpm test              # chat RAG + API tests
+```
+
+After editing anything in `knowledge/`, rebuild the search index: `pnpm knowledge`.
+
+## Deploy (Vercel)
+
+Import the repo, then set `OPENAI_API_KEY` (and optionally `OPENAI_MODEL`, default `gpt-5-mini`) under Settings → Environment Variables.
