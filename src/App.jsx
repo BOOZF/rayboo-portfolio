@@ -11,12 +11,15 @@ import AboutScreen from './components/AboutScreen.jsx';
 import ProjectRoom from './components/ProjectRoom.jsx';
 import Flash from './components/Flash.jsx';
 import AskRay from './components/AskRay.jsx';
+import TouchControls from './components/TouchControls.jsx';
+import useTouchDevice from './components/useTouchDevice.js';
 
 export default function App() {
   const mount = useRef(null), world = useRef(null), keyHandler = useRef(() => {});
   const [ready, setReady] = useState(false), [started, setStarted] = useState(false);
   const [prompt, setPrompt] = useState(-1), [project, setProject] = useState(-1), [chapter, setChapter] = useState(0);
   const [panel, setPanel] = useState(''), [flash, setFlash] = useState({ o:0, d:'.6s' });
+  const touch = useTouchDevice();
 
   useEffect(() => {
     const w = world.current = new World(mount.current, DOORS, {
@@ -61,13 +64,14 @@ export default function App() {
   const inRoom = project >= 0;
 
   return (
-    <div style={{ position:'fixed', inset:0, overflow:'hidden', background:'#03040c' }}>
+    <div className={touch ? 'is-touch' : ''} style={{ position:'fixed', inset:0, overflow:'hidden', background:'#03040c' }}>
       <div ref={mount} style={{ position:'absolute', inset:0 }} />
       <Sidebar nav={nav} active={panel || (started ? '' : 'home')} showProjects={panel === 'projects'} doors={DOORS}
         onTeleport={i => { W().teleport(i); setStarted(true); setPanel(''); }} />
       {!started && !panel && <IntroCard />}
       {prompt >= 0 && !inRoom && !panel && <DoorPrompt door={DOORS[prompt]} onOpen={() => W().enter(prompt)} />}
-      {started && !inRoom && panel !== 'about' && <ControlsHint />}
+      {started && !inRoom && panel !== 'about' && <ControlsHint touch={touch} />}
+      {touch && started && !inRoom && panel !== 'about' && <TouchControls world={W} />}
       {panel === 'contact' && <ContactPanel onClose={() => setPanel('')} />}
       {panel === 'about' && <AboutScreen onClose={closeAbout} />}
       {!started && panel !== 'about' && <StartButton ready={ready} onStart={() => { W().start(); setStarted(true); setPanel(''); }} />}

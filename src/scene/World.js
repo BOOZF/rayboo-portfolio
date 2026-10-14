@@ -25,6 +25,7 @@ const wrapAngle = a => ((a % (Math.PI * 2)) + Math.PI * 3) % (Math.PI * 2) - Mat
 export class World {
   phase = 'intro'; keys = {}; yaw = 0; pitch = .12; vx = 0; vz = 0; speed = 0; amp = 0; stride = 0; lean = 0;
   jy = 0; vy = 0; land = 0; airB = 0; scale0 = 1; prompt = -1; snap = true; dead = false;
+  stick = { x:0, y:0, run:false }; jumpQueued = false; // touch input (see TouchControls)
   deck = { y:0, halfWidth:1.6, zMin:-40, zMax:10 }; // walkable area until the walkway loads
 
   constructor(el, doors, cb) { this.el = el; this.doors = doors; this.cb = cb; this.boot(); }
@@ -84,8 +85,8 @@ export class World {
 
   bindInput() {
     const c = this.renderer.domElement, on = (t, ev, f, o) => { t.addEventListener(ev, f, o); return () => t.removeEventListener(ev, f, o); };
-    const look = (dx, dy) => { this.yaw -= dx * .0022; this.pitch = Math.max(-.35, Math.min(.85, this.pitch + dy * .0022)); };
-    let drag = false, tx = 0, ty = 0;
+    const look = (dx, dy) => this.look(dx, dy);
+    let drag = false;
     this.offs = [
       on(window, 'resize', () => { const w = this.el.clientWidth, h = this.el.clientHeight; this.renderer.setSize(w, h); this.composer.setSize(w, h); this.cam.aspect = w / h; this.cam.updateProjectionMatrix(); }),
       on(window, 'keydown', e => {
@@ -100,9 +101,6 @@ export class World {
       on(window, 'mousemove', e => { if (this.phase !== 'walk') return; if (document.pointerLockElement === c) look(e.movementX, e.movementY); else if (drag) look(e.movementX * 1.4, e.movementY * 1.4); }),
       on(c, 'mousedown', () => { drag = true; this.lock(); }),
       on(window, 'mouseup', () => { drag = false; }),
-      on(c, 'touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive:true }),
-      on(c, 'touchmove', e => { const t = e.touches[0]; if (this.phase === 'walk') look((t.clientX - tx) * 2, (t.clientY - ty) * 2); tx = t.clientX; ty = t.clientY; this.keys.w = e.touches.length > 1; }, { passive:true }),
-      on(c, 'touchend', () => { this.keys.w = false; }),
     ];
   }
 
@@ -111,6 +109,11 @@ export class World {
     try { const p = this.renderer.domElement.requestPointerLock(); p && p.catch && p.catch(() => {}); } catch { /* pointer lock unsupported */ }
   }
   unlock() { document.exitPointerLock && document.exitPointerLock(); }
+
+  // ---- touch input (phone / tablet) ----
+  look(dx, dy) { if (this.phase !== 'walk') return; this.yaw -= dx * .0022; this.pitch = Math.max(-.35, Math.min(.85, this.pitch + dy * .0022)); }
+  setStick(m) { this.stick = m; }
+  jump() { if (this.phase === 'walk') this.jumpQueued = true; }
   setPrompt(i) { if (i !== this.prompt) { this.prompt = i; this.cb.onPrompt(i); } }
 
   // Ray at the start of the walkway, facing the camera
@@ -168,18 +171,25 @@ export class World {
     let moving = false, run = false, look = 0, crouch = 0, hop = 0;
 
     if (this.phase === 'walk') {
-      run = !!k.shift; const spd = run ? 6.2 : 3.4;
-      const f = (k.w || k.arrowup ? 1 : 0) - (k.s || k.arrowdown ? 1 : 0), s = (k.d ? 1 : 0) - (k.a ? 1 : 0);
+      const st = this.stick, touch = st.x || st.y;
+      run = !!k.shift || st.run; const spd = run ? 6.2 : 3.4;
+      // keyboard gives full-speed directions; the thumb-stick gives an analogue push (0..1)
+      const f = touch ? st.y : (k.w || k.arrowup ? 1 : 0) - (k.s || k.arrowdown ? 1 : 0), s = touch ? st.x : (k.d ? 1 : 0) - (k.a ? 1 : 0);
       if (k.arrowleft) this.yaw += 1.8 * dt; if (k.arrowright) this.yaw -= 1.8 * dt;
       let tvx = 0, tvz = 0;
-      if (f || s) { const sy = Math.sin(this.yaw), cy = Math.cos(this.yaw), dx = -sy * f + cy * s, dz = -cy * f - sy * s, l = Math.hypot(dx, dz); tvx = dx / l * spd; tvz = dz / l * spd; }
+      if (f || s) {
+        const sy = Math.sin(this.yaw), cy = Math.cos(this.yaw), dx = -sy * f + cy * s, dz = -cy * f - sy * s, l = Math.hypot(dx, dz);
+        const push = touch ? Math.min(1, Math.hypot(f, s)) : 1;
+        tvx = dx / l * spd * push; tvz = dz / l * spd * push;
+      }
       const acc = damp(f || s ? 8 : 11, dt);
       this.vx += (tvx - this.vx) * acc; this.vz += (tvz - this.vz) * acc;
       R.position.x = Math.max(-this.deck.halfWidth, Math.min(this.deck.halfWidth, R.position.x + this.vx * dt));
       R.position.z = Math.max(this.deck.zMin, Math.min(this.deck.zMax, R.position.z + this.vz * dt));
       this.speed = Math.hypot(this.vx, this.vz); moving = this.speed > .15;
       if (this.speed > .25) R.rotation.y += wrapAngle(Math.atan2(this.vx, this.vz) - R.rotation.y) * damp(11, dt);
-      if (k[' '] && this.jy <= 0 && !this.jumpHeld) { this.vy = 4.8; this.jy = .001; this.jumpHeld = true; }
+      if ((k[' '] && !this.jumpHeld || this.jumpQueued) && this.jy <= 0) { this.vy = 4.8; this.jy = .001; this.jumpHeld = !!k[' ']; }
+      this.jumpQueued = false;
       if (!k[' ']) this.jumpHeld = false;
       // the ring Ray is walking past raises the prompt: measure to the railing beside each ring, so the ring on his side wins
       let best = -1, bd = 4.2;

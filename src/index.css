@@ -147,3 +147,36 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 .ask-form button{width:42px;border:none;border-radius:12px;background:#ffcf8a;color:#1d1a24;font-size:16px;cursor:pointer}
 .ask-form button:disabled{opacity:.4;cursor:default}
 @media (max-width:760px){.ask{left:auto;right:12px;bottom:12px;align-items:flex-end}.ask.behind-panel{display:none}.ask-fab-label{display:none}.ask-fab{width:50px;height:50px;justify-content:center;padding:0;font-size:20px}}
+
+/* ---- touch devices (phone / tablet) ---- */
+.touch-surface{position:absolute;inset:0;z-index:2;touch-action:none}
+.stick{position:absolute;z-index:3;margin:-56px 0 0 -56px;border-radius:50%;border:2px solid rgba(255,255,255,.35);background:radial-gradient(circle,rgba(255,255,255,.08),rgba(255,255,255,.02));pointer-events:none;display:flex;align-items:center;justify-content:center}
+.stick.run{border-color:#ffcf8a;box-shadow:0 0 24px rgba(255,207,138,.5)}
+.stick-knob{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.85);box-shadow:0 4px 14px rgba(0,0,0,.4)}
+.stick.run .stick-knob{background:#ffcf8a}
+.touch-btn{position:absolute;z-index:4;width:68px;height:68px;border-radius:50%;border:2px solid rgba(255,255,255,.3);background:rgba(10,12,32,.6);backdrop-filter:blur(6px);color:#fff;font-size:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}
+.touch-btn span{font-size:11px;font-weight:800;margin-top:-2px}
+.touch-btn:active{background:rgba(255,207,138,.35)}
+.touch-jump{right:max(16px, env(safe-area-inset-right));bottom:max(84px, calc(env(safe-area-inset-bottom) + 72px))}
+.is-touch .controls-hint{display:flex;flex-wrap:wrap;justify-content:center;white-space:normal;pointer-events:none;top:auto;left:max(12px, env(safe-area-inset-left));right:76px;transform:none;margin:0 auto;width:fit-content;max-width:calc(100% - 88px);bottom:max(12px, env(safe-area-inset-bottom));font-size:12px;gap:4px 10px;padding:8px 14px;box-sizing:border-box}
+.is-touch .door-prompt{left:auto;right:max(96px, calc(env(safe-area-inset-right) + 96px));top:auto;bottom:max(84px, calc(env(safe-area-inset-bottom) + 72px));transform:none;z-index:4}
+.is-touch .ask{left:auto;right:max(12px, env(safe-area-inset-right));bottom:max(12px, env(safe-area-inset-bottom));align-items:flex-end}
+.is-touch .ask-fab-label{display:none}
+.is-touch .ask-fab{width:52px;height:52px;justify-content:center;padding:0;font-size:20px}
+.is-touch .ask.raised{bottom:92px}
+@media (min-width:761px){
+  .is-touch .touch-btn{width:80px;height:80px;font-size:28px}
+  .is-touch .touch-jump{right:max(32px, env(safe-area-inset-right));bottom:110px}
+  .is-touch .door-prompt{right:128px;bottom:110px}
+}
+
+/* short landscape screens (phones on their side): one compact header row so the bridge stays visible */
+@media (max-height:500px){
+  .sidebar{flex-direction:row;align-items:center;top:max(8px, env(safe-area-inset-top));left:max(12px, env(safe-area-inset-left));right:auto;width:auto;gap:10px}
+  .sidebar .avatar{width:38px;height:38px}
+  .sidebar > div:first-child > div > div:nth-child(n+2){display:none}
+  .sidebar > div:first-child > div > div:first-child{font-size:18px !important}
+  .sidebar nav{flex-direction:row !important;padding:4px !important}
+  .nav-btn{padding:6px 10px;font-size:13px}
+  .intro-card{display:none}
+}

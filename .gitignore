@@ -33,3 +33,7 @@ assets-src/
 # this project uses pnpm (pnpm-lock.yaml); keep npm's lockfile out so Vercel installs with pnpm
 package-lock.json
 !.env.example
+
+# Playwright output
+test-results/
+playwright-report/
