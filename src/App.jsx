@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { DOORS } from './doors/index.js';
-import { World } from './scene/World.js';
 import Sidebar from './components/Sidebar.jsx';
 import IntroCard from './components/IntroCard.jsx';
 import StartButton from './components/StartButton.jsx';
@@ -14,6 +13,9 @@ import AskRay from './components/AskRay.jsx';
 import TouchControls from './components/TouchControls.jsx';
 import useTouchDevice from './components/useTouchDevice.js';
 
+// Stand-in until the 3D chunk has loaded: any call on it is a harmless no-op.
+const NO_WORLD = new Proxy({}, { get:() => () => {} });
+
 export default function App() {
   const mount = useRef(null), world = useRef(null), keyHandler = useRef(() => {});
   const [ready, setReady] = useState(false), [started, setStarted] = useState(false);
@@ -21,18 +23,23 @@ export default function App() {
   const [panel, setPanel] = useState(''), [flash, setFlash] = useState({ o:0, d:'.6s' });
   const touch = useTouchDevice();
 
+  // three.js loads as its own chunk, so the header and intro paint before the 3D engine has downloaded
   useEffect(() => {
-    const w = world.current = new World(mount.current, DOORS, {
-      onReady:() => setReady(true),
-      onPrompt:setPrompt,
-      onEnter:i => { setProject(i); setChapter(0); },
-      onFlash:(o, d) => setFlash({ o, d }),
-      onKey:k => keyHandler.current(k),
+    let w, dead = false;
+    import('./scene/World.js').then(({ World }) => {
+      if (dead) return;
+      w = world.current = new World(mount.current, DOORS, {
+        onReady:() => setReady(true),
+        onPrompt:setPrompt,
+        onEnter:i => { setProject(i); setChapter(0); },
+        onFlash:(o, d) => setFlash({ o, d }),
+        onKey:k => keyHandler.current(k),
+      });
     });
-    return () => w.dispose();
+    return () => { dead = true; if (w) w.dispose(); };
   }, []);
 
-  const W = () => world.current;
+  const W = () => world.current || NO_WORLD;
   const closeRoom = () => {
     setFlash({ o:1, d:'.35s' });
     setTimeout(() => { W().exitRoom(); setProject(-1); setFlash({ o:0, d:'.7s' }); }, 400);
@@ -65,16 +72,22 @@ export default function App() {
 
   return (
     <div className={touch ? 'is-touch' : ''} style={{ position:'fixed', inset:0, overflow:'hidden', background:'#03040c' }}>
-      <div ref={mount} style={{ position:'absolute', inset:0 }} />
+      {/* the scene fades in once its models have loaded, instead of popping in */}
+      <div ref={mount} style={{ position:'absolute', inset:0, opacity:ready ? 1 : 0, transition:'opacity .8s ease' }} />
       <Sidebar nav={nav} active={panel || (started ? '' : 'home')} showProjects={panel === 'projects'} doors={DOORS}
-        onTeleport={i => { W().teleport(i); setStarted(true); setPanel(''); }} />
-      {!started && !panel && <IntroCard />}
+        onTeleport={i => { if (!ready) return; W().teleport(i); setStarted(true); setPanel(''); }} />
+      {/* intro card + start button share one stack so on phones they line up instead of overlapping */}
+      {!started && panel !== 'about' && (
+        <div className="home-stack">
+          {!panel && <IntroCard />}
+          <StartButton ready={ready} onStart={() => { W().start(); setStarted(true); setPanel(''); }} />
+        </div>
+      )}
       {prompt >= 0 && !inRoom && !panel && <DoorPrompt door={DOORS[prompt]} onOpen={() => W().enter(prompt)} />}
       {started && !inRoom && panel !== 'about' && <ControlsHint touch={touch} />}
       {touch && started && !inRoom && panel !== 'about' && <TouchControls world={W} />}
       {panel === 'contact' && <ContactPanel onClose={() => setPanel('')} />}
       {panel === 'about' && <AboutScreen onClose={closeAbout} />}
-      {!started && panel !== 'about' && <StartButton ready={ready} onStart={() => { W().start(); setStarted(true); setPanel(''); }} />}
       {inRoom && <ProjectRoom door={DOORS[project]} chapter={chapter} total={DOORS[project].chapters.length}
         onChapter={setChapter} onPrev={() => stepChapter(-1)} onNext={() => stepChapter(1)} onClose={closeRoom} />}
       <AskRay raised={inRoom} behindPanel={panel === 'about'} />

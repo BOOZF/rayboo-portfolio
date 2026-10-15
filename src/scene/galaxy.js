@@ -5,10 +5,12 @@ const starMat = (T, size) => new T.ShaderMaterial({
   uniforms:{ uTime:{ value:0 }, uSize:{ value:size }, uPx:{ value:Math.min(devicePixelRatio, 2) } },
   vertexShader:`attribute float aSize; attribute float aSeed; attribute vec3 color; varying vec3 vC; varying float vA; uniform float uTime, uSize, uPx;
     void main() { vec4 mv = modelViewMatrix * vec4(position, 1.); gl_Position = projectionMatrix * mv;
-      vA = .55 + .45 * sin(uTime * (.6 + aSeed * 1.8) + aSeed * 40.); vC = color;
-      gl_PointSize = aSize * uSize * uPx * (300. / -mv.z); }`,
+      float px = aSize * uSize * uPx * (300. / -mv.z);
+      // gentle, slow shimmer only; stars smaller than ~2px fade instead of shrinking so they don't sparkle as the camera moves
+      vA = (.88 + .12 * sin(uTime * (.25 + aSeed * .5) + aSeed * 40.)) * clamp(px / (2. * uPx), .15, 1.); vC = color;
+      gl_PointSize = max(px, 2. * uPx); }`,
   fragmentShader:`varying vec3 vC; varying float vA;
-    void main() { float d = length(gl_PointCoord - .5); float a = smoothstep(.5, 0., d); a *= a; gl_FragColor = vec4(vC * a * vA * 1.6, a * vA); }`,
+    void main() { float d = length(gl_PointCoord - .5); float a = smoothstep(.5, 0., d); a *= a; gl_FragColor = vec4(vC * a * vA * .85, a * vA); }`,
 });
 
 function starField(T, count, rMin, rMax, size, box) {
@@ -28,11 +30,16 @@ function starField(T, count, rMin, rMax, size, box) {
 
 // Sky dome (the Meshy galaxy image, mirrored so it tiles seamlessly), twinkling star shells, near-field dust and nebula glows.
 export function buildGalaxy(T, scene) {
-  const sky = new T.Mesh(new T.SphereGeometry(600, 64, 32), new T.MeshBasicMaterial({ side:T.BackSide, depthWrite:false, toneMapped:false, color:0x8a8aa6 }));
-  sky.renderOrder = -10; scene.add(sky);
+  // darken towards the poles, where the sphere's texture pinches into a bright starburst overhead
+  const skyGeo = new T.SphereGeometry(600, 64, 32), py = skyGeo.attributes.position, shade = new Float32Array(py.count * 3);
+  for (let i = 0; i < py.count; i++) shade.fill(1 - T.MathUtils.smoothstep(Math.abs(py.getY(i)) / 600, .55, .95), i * 3, i * 3 + 3);
+  skyGeo.setAttribute('color', new T.BufferAttribute(shade, 3));
+  const sky = new T.Mesh(skyGeo, new T.MeshBasicMaterial({ side:T.BackSide, depthWrite:false, toneMapped:false, color:0x8a8aa6, vertexColors:true }));
+  sky.renderOrder = -10; sky.visible = false; scene.add(sky); // hidden until the image arrives (else a flat pale grey), then faded up
+  const skyTint = new T.Color(0x8a8aa6);
   new T.TextureLoader().load('/assets/galaxy-sky.jpg', t => {
     t.colorSpace = T.SRGBColorSpace; t.wrapS = t.wrapT = T.MirroredRepeatWrapping; t.repeat.set(4, 2); t.anisotropy = 8;
-    sky.material.map = t; sky.material.needsUpdate = true;
+    sky.material.map = t; sky.material.color.setRGB(0, 0, 0); sky.material.needsUpdate = true; sky.visible = true;
   });
   const far = starField(T, 5000, 250, 520, 1.6), near = starField(T, 1600, 0, 0, .55, [140, 70, 40, 230]);
   scene.add(far, near);
@@ -42,6 +49,6 @@ export function buildGalaxy(T, scene) {
     sp.position.set(x, y, z); sp.scale.setScalar(s); scene.add(sp); return sp;
   });
   return {
-    update(t, camPos) { sky.position.copy(camPos); far.position.copy(camPos).multiplyScalar(.85); far.material.uniforms.uTime.value = near.material.uniforms.uTime.value = t; nebulae.forEach((n, i) => { n.material.rotation = t * .01 * (i % 2 ? 1 : -1); }); },
+    update(t, camPos) { sky.position.copy(camPos); if (sky.visible) sky.material.color.lerp(skyTint, .04); far.position.copy(camPos).multiplyScalar(.85); far.material.uniforms.uTime.value = near.material.uniforms.uTime.value = t; nebulae.forEach((n, i) => { n.material.rotation = t * .01 * (i % 2 ? 1 : -1); }); },
   };
 }

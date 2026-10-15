@@ -1,0 +1,31 @@
+// Questions people search for about Ray. Rendered into faq.html (visible text + FAQPage structured data) at build time
+// by the `seo-pages` plugin in vite.config.js, so the page and the data Google reads can never drift apart.
+// Plain text only; blank lines split an answer into paragraphs.
+export const FAQ = [
+  { q:'Who is Ray Boo?',
+    a:'Ray Boo (full name Boo Zheng Feng) is an AI Solution Architect based in Kuala Lumpur, Malaysia. He turns early-stage AI into shipped, real-world products, working across software engineering, data science and applied AI, from messy data and models through to the working interface a client clicks through.' },
+  { q:'What does Ray do as an AI Solution Architect in Kuala Lumpur?',
+    a:"Since September 2025 Ray has been an AI Solution Architect at Huawei Technologies, APAC Enterprise Business Group, working out of Kuala Lumpur. He builds proofs of concept, presents live client demos and leads pre-sales solutioning for government, industrial and banking AI projects, mapping each client's needs to the right AI architecture and hardware." },
+  { q:'Is Ray Boo an AI engineer as well as an architect?',
+    a:'Yes. Ray is hands-on: he writes the code behind his designs. Before his architect role he was an AI Software Developer and AI Team Lead at CMG Technologies, where he built and shipped LLM chatbots, a no-code AI agent builder and full-stack Next.js products running on Kubernetes.' },
+  { q:'What AI projects has Ray delivered?',
+    a:"F&B Service Chatbot: a WhatsApp AI agent that handles restaurant orders, menu and allergy questions, with one-tap handoff to a human.\n\nNo-Code Agent Builder: an internal platform where any department builds its own RAG agent and tools without code.\n\nMadam Kwan's Mini Program: a live customer ordering and rewards app (Next.js, Kubernetes, CI/CD).\n\nRunForPeace: a charity fun-run platform with a RAG assistant that served more than one million user interactions.\n\nMyGOV AI Assistant: a government super-app proof of concept; the client adopted his UI, UX flow and design.\n\nWater-Treatment SCADA AI: root-cause analysis that turns floods of plant alarms into answers for engineers.\n\nAmBank Credit-Paper AI: a fine-tuned Qwen3 model that lifted extraction accuracy from about 30% to 80%.\n\nSales Intelligence: XGBoost win-rate prediction with SHAP explanations and a knowledge-graph agent that recommends each deal's next move." },
+  { q:'Does Ray have experience with LLMs, RAG and AI agents?',
+    a:'Yes, it is the core of his work. Ray builds retrieval-augmented generation (RAG and GraphRAG), knowledge graphs, structured output, tool calling and multi-agent systems, using frameworks such as LangGraph, mastra-ai, MCP, A2A and Dify. He started building agents before mature frameworks existed, so he knows how they work underneath.' },
+  { q:'Can Ray fine-tune and self-host large language models?',
+    a:"Yes. For AmBank he fine-tuned Qwen3 on limited GPUs, raising credit-paper extraction accuracy from about 30% to 80% with data matching above 90%. He also self-hosts open models on private GPU servers with vLLM, llama.cpp, Ollama, liteLLM and LM Studio, including KV-cache handling, so models can run on a company's own infrastructure." },
+  { q:"What is Ray's technical stack?",
+    a:'Applied AI: RAG, GraphRAG, knowledge graphs, multi-agent systems, LangGraph, mastra-ai, MCP, A2A, Dify.\n\nMachine learning and data science: XGBoost, SHAP, feature engineering, TensorFlow, PyTorch.\n\nFull-stack: TypeScript, Python, JavaScript, SQL, React, Next.js, Node.js, FastAPI, Flask, React Native, Tailwind CSS.\n\nData and deployment: PostgreSQL, MySQL, MS SQL, Docker, Kubernetes, CI/CD, Huawei Cloud.' },
+  { q:'Has Ray led teams and worked directly with clients?',
+    a:'Yes. At CMG Technologies he was hand-picked to lead a new AI team, owning delivery, stakeholder management and translating business needs into AI. At Huawei he runs proofs of concept, live client demos and pre-sales conversations with government, banking and industrial clients across Asia Pacific.' },
+  { q:"What is Ray's educational background?",
+    a:"Ray holds a Bachelor of Computer Science (Data Science) from Tunku Abdul Rahman University of Management and Technology (TARUMT) in Kuala Lumpur, graduating with a CGPA of 3.74 out of 4.00. He made the President's List twice and the Dean's List twice, and received a 50% scholarship." },
+  { q:'Has Ray spoken at or judged AI events?',
+    a:'Yes. Ray was invited to represent Huawei as a judge and speaker at the AI Singapore hackathon at the National University of Singapore (NUS), evaluating teams on the judging panel and sharing an industry perspective on stage.' },
+  { q:'Where is Ray based, and which regions does he work with?',
+    a:'Ray is based in Kuala Lumpur, Malaysia, and works with clients across Malaysia and the wider Asia Pacific region.' },
+  { q:'How can I contact Ray Boo?',
+    a:'Email Ray at zhengfengboo0710@gmail.com. He is happy to talk about AI projects, roles and ideas.' },
+  { q:'What is this website?',
+    a:"boozhengfeng.com is Ray's interactive 3D portfolio. You walk a star bridge and step into a bubble for each project to see the problem, the build and the impact. An \"Ask about Ray\" assistant answers questions about his work from the same facts on this page." },
+];

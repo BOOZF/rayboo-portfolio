@@ -8,6 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@fontsource/fredoka':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource/nunito-sans':
+        specifier: ^5.3.0
+        version: 5.3.0
       react:
         specifier: ^19.2.8
         version: 19.3.0
@@ -38,6 +44,12 @@ importers:
         version: 8.3.4
 
 packages:
+
+  '@fontsource/fredoka@5.3.0':
+    resolution: {integrity: sha512-s2IhjQ50wDnKkkaKmjhtL0rxQg6ITsVusiipM3m7zUwVZZbbCKsscNDkngwp28xVzfIt7neWrkgU1qKqyTycQg==}
+
+  '@fontsource/nunito-sans@5.3.0':
+    resolution: {integrity: sha512-CctNhebQ2YYJUwVMCAkHexQg7yedfz9s8JzaETALyc9QIQuDFRlNTWXux9H5PsNLgptPkrzRDomAdLJt1sDFpQ==}
 
   '@oxc-project/types@0.153.0':
     resolution: {integrity: sha512-jSNrRIyvPVLL5E1z/tS5zLAprosGz/FuI1PWwEOz59j3E4TTTzSpqKb/RDGqJhhW0QHYISGXxq582wGx6T11Tw==}
@@ -503,6 +515,10 @@ packages:
         optional: true
 
 snapshots:
+
+  '@fontsource/fredoka@5.3.0': {}
+
+  '@fontsource/nunito-sans@5.3.0': {}
 
   '@oxc-project/types@0.153.0': {}
 

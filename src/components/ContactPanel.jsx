@@ -10,6 +10,7 @@ export default function ContactPanel({ onClose }) {
       <div style={{ fontSize:15, lineHeight:1.5, opacity:.9 }}>Building enterprise AI that ships. Happy to talk projects, roles or ideas.</div>
       <a className="link-btn" href={'mailto:' + PROFILE.email} target="_blank" rel="noopener noreferrer">✉ {PROFILE.email}</a>
       <div style={{ fontSize:13, opacity:.7 }}>{PROFILE.location}</div>
+      <div style={{ fontSize:13, display:'flex', gap:14 }}><a href="/faq">FAQ</a><a href="/privacy">Privacy policy</a></div>
     </div>
   );
 }

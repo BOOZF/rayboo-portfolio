@@ -14,5 +14,6 @@ export default defineConfig({
     { name:'phone', use:touch('iPhone 13') },
     { name:'phone-landscape', use:touch('iPhone 13 landscape') },
     { name:'ipad', use:touch('iPad Pro 11') },
+    { name:'android', use:touch('Pixel 7') },
   ],
 });

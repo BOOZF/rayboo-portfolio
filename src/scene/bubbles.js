@@ -5,20 +5,21 @@ export const BUBBLE_R = 1.9;
 
 export const BUBBLE_LIFT = 1.9; // bubble centre height above the deck, so each bubble sits cradled in its ring
 
+// clamp before pow: interpolated normals can push the dot past 1, and pow of a negative is NaN, which bloom smears into black blocks
 const rimMat = (T, color) => new T.ShaderMaterial({
   transparent:true, depthWrite:false, blending:T.AdditiveBlending, side:T.FrontSide,
   uniforms:{ uColor:{ value:new T.Color(color) }, uGlow:{ value:.6 } },
   vertexShader:`varying vec3 vN; varying vec3 vV; void main() { vec4 mv = modelViewMatrix * vec4(position, 1.); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }`,
   fragmentShader:`uniform vec3 uColor; uniform float uGlow; varying vec3 vN; varying vec3 vV;
-    void main() { float f = pow(1. - abs(dot(normalize(vN), normalize(vV))), 2.6); gl_FragColor = vec4(uColor * f * (.8 + uGlow * 1.6), f); }`,
+    void main() { float f = pow(clamp(1. - abs(dot(normalize(vN), normalize(vV))), 0., 1.), 2.6); gl_FragColor = vec4(uColor * f * (.8 + uGlow * 1.6), f); }`,
 });
 
-// Soap-bubble shell (Meshy bubble shape + iridescent glass), a coloured fresnel rim, a glow core and the floating label card.
+// Bubble shell (Meshy bubble shape + clear glass), a coloured fresnel rim, a glow core and the floating label card.
 export function buildBubbles(T, scene, doors, pods, bubbleSrc, env) {
   const { geo } = bakeMesh(T, bubbleSrc), bb = geo.boundingBox, c = bb.getCenter(new T.Vector3());
   geo.translate(-c.x, -c.y, -c.z); const s = BUBBLE_R / (Math.max(bb.max.x - bb.min.x, bb.max.y - bb.min.y) / 2);
-  const shell = new T.MeshPhysicalMaterial({ color:0xffffff, roughness:.04, metalness:0, transparent:true, opacity:.1, iridescence:1, iridescenceIOR:1.3,
-    iridescenceThicknessRange:[120, 760], envMap:env, envMapIntensity:.45, depthWrite:false, specularIntensity:.6 });
+  // plain clear glass: the iridescent coating produced invalid pixels at grazing angles that bloom smeared into black blocks
+  const shell = new T.MeshStandardMaterial({ color:0xffffff, roughness:.04, metalness:0, transparent:true, opacity:.08, envMap:env, envMapIntensity:.4, depthWrite:false });
   const items = doors.map((d, i) => {
     const group = new T.Group(); group.position.copy(pods[i]).add(new T.Vector3(0, BUBBLE_LIFT, 0)); scene.add(group);
     const ball = new T.Mesh(geo, shell); ball.scale.setScalar(s); ball.renderOrder = 2; group.add(ball);

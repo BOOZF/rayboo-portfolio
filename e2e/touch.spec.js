@@ -30,6 +30,15 @@ async function startJourney(page) {
   await page.waitForTimeout(1500); // Ray turns around to face down the bridge
 }
 
+// Android Chrome grants pointer lock to touch too, and a locked pointer sends every touch to the canvas, so the
+// joystick goes dead after Start journey. iOS ignores the request, which is why only Android showed it.
+test('starting the journey never asks for pointer lock on a touch device', async ({ page }) => {
+  await page.addInitScript(() => { window.__locks = 0; Element.prototype.requestPointerLock = function () { window.__locks++; return Promise.resolve(); }; });
+  await startJourney(page);
+  await page.getByText('Right thumb: look').waitFor();
+  expect(await page.evaluate(() => window.__locks)).toBe(0);
+});
+
 test('holding the joystick forward walks Ray to the first bubble and offers Enter', async ({ page }) => {
   await startJourney(page);
   const { width, height } = page.viewportSize();
@@ -58,9 +67,9 @@ test('dragging on the right half turns the camera, so forward then walks the oth
 // Every on-screen control a walking visitor can see: none may overlap another or leave the screen.
 const CONTROLS = ['.sidebar', '.ask-fab', '.touch-jump', '.controls-hint', '.door-prompt'];
 
-async function boxes(page) {
+async function boxes(page, selectors = CONTROLS) {
   const out = {};
-  for (const sel of CONTROLS) {
+  for (const sel of selectors) {
     const el = page.locator(sel).first();
     if (await el.count() && await el.isVisible()) out[sel] = await el.boundingBox();
   }
@@ -82,4 +91,28 @@ test('walking controls fit the screen without overlapping, including next to a b
   for (let i = 0; i < names.length; i++) for (let j = i + 1; j < names.length; j++)
     expect(overlap(b[names[i]], b[names[j]]), `${names[i]} overlaps ${names[j]}`).toBe(false);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+// Home screen: the intro card, Start button, chat button and every menu item must all be on screen and apart,
+// on this device and on the smallest phone still in use (iPhone SE, 320 px wide).
+test('home screen layout fits without overlaps, down to a 320px-wide phone', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name:/Start journey/ }).waitFor();
+  for (const size of [page.viewportSize(), { width:320, height:568 }]) {
+    await page.setViewportSize(size);
+    await page.waitForTimeout(300);
+    const b = await boxes(page, ['.sidebar', '.intro-card', '.start-btn', '.ask-fab']), names = Object.keys(b);
+    expect(names).toEqual(expect.arrayContaining(['.sidebar', '.start-btn', '.ask-fab']));
+    for (const n of names) {
+      expect(b[n].x, `${n} inside left edge at ${size.width}px`).toBeGreaterThanOrEqual(0);
+      expect(b[n].x + b[n].width, `${n} inside right edge at ${size.width}px`).toBeLessThanOrEqual(size.width + 1);
+      expect(b[n].y + b[n].height, `${n} inside bottom edge at ${size.width}px`).toBeLessThanOrEqual(size.height + 1);
+    }
+    for (let i = 0; i < names.length; i++) for (let j = i + 1; j < names.length; j++)
+      expect(overlap(b[names[i]], b[names[j]]), `${names[i]} overlaps ${names[j]} at ${size.width}px`).toBe(false);
+    for (const nav of await page.locator('.nav-btn').all()) {
+      const r = await nav.boundingBox();
+      expect(r.x + r.width, `menu item cut off at ${size.width}px`).toBeLessThanOrEqual(size.width + 1);
+    }
+  }
 });

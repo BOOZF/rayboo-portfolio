@@ -63,9 +63,12 @@ export class World {
     // dust puffs kicked up by footsteps and landings
     const dustTex = radialTex(T, [[0, 'rgba(200,220,255,.9)'], [1, 'rgba(200,220,255,0)']]);
     this.dust = Array.from({ length:14 }, () => { const m = new T.Sprite(new T.SpriteMaterial({ map:dustTex, transparent:true, depthWrite:false, blending:T.AdditiveBlending, opacity:0 })); m.visible = false; scene.add(m); return { m, life:0 }; });
-    const composer = this.composer = new EffectComposer(r);
+    // the composer renders off-screen, so it needs its own MSAA target or thin bright rails shimmer as the camera moves
+    const pr = r.getPixelRatio(), rt = new T.WebGLRenderTarget(el.clientWidth * pr, el.clientHeight * pr, { type:T.HalfFloatType, samples:4 });
+    const composer = this.composer = new EffectComposer(r, rt);
     composer.addPass(new RenderPass(scene, this.cam));
-    composer.addPass(new UnrealBloomPass(new T.Vector2(el.clientWidth, el.clientHeight), .6, .5, .78));
+    // high threshold so only the neon strips and bubbles glow, not the sky or specular glints
+    composer.addPass(new UnrealBloomPass(new T.Vector2(el.clientWidth, el.clientHeight), .45, .4, .9));
     composer.addPass(new OutputPass());
     this.last = performance.now();
   }
@@ -106,6 +109,9 @@ export class World {
 
   lock(force) {
     if (!force && this.phase !== 'walk') return;
+    // pointer lock is for mouse look only: Android Chrome honours it for touch too, which then routes every touch
+    // to the canvas and the on-screen joystick never receives a finger
+    if (matchMedia('(pointer: coarse)').matches) return;
     try { const p = this.renderer.domElement.requestPointerLock(); p && p.catch && p.catch(() => {}); } catch { /* pointer lock unsupported */ }
   }
   unlock() { document.exitPointerLock && document.exitPointerLock(); }
