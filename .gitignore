@@ -37,3 +37,7 @@ package-lock.json
 # Playwright output
 test-results/
 playwright-report/
+
+# source documents (the résumé holds a home address and phone number): never commit or deploy
+*.pdf
+*.pptx

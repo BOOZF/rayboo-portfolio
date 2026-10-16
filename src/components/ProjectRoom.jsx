@@ -1,9 +1,10 @@
+import { useEffect, useState } from 'react';
 import { iconUrl } from '../scene/textures.js';
 import ChapterDiagram from './ChapterDiagram.jsx';
 
 // Screenshot area for one chapter: phone screens sit side by side, wide shots and photos fill the frame.
 // A chapter without its own screenshot but with a `highlight` shows the key result over the project's screenshots, dimmed.
-function Visual({ door, chapter }) {
+function Visual({ door, chapter, onZoom }) {
   const imgs = chapter.images || [];
   if (!imgs.length && chapter.diagram) return <ChapterDiagram diagram={chapter.diagram} />;
   if (!imgs.length && chapter.highlight) {
@@ -26,19 +27,32 @@ function Visual({ door, chapter }) {
   );
   return (
     <div className={'room-visual' + (imgs[0].kind === 'phone' ? ' phones' : '')}>
-      {imgs.map(im => <img key={im.src} src={im.src} alt={im.alt} className={'shot ' + im.kind} loading="lazy" />)}
+      {imgs.map(im => (
+        <button key={im.src} type="button" className={'shot-btn ' + im.kind} onClick={() => onZoom(im)} aria-label={'Enlarge: ' + im.alt}>
+          <img src={im.src} alt={im.alt} className={'shot ' + im.kind} loading="lazy" />
+        </button>
+      ))}
+      <span className="zoom-hint" aria-hidden="true">⤢ Enlarge</span>
     </div>
   );
 }
 
 export default function ProjectRoom({ door, chapter, total, onChapter, onPrev, onNext, onClose }) {
-  const ch = door.chapters[chapter], last = chapter === total - 1;
+  const ch = door.chapters[chapter], last = chapter === total - 1, [zoom, setZoom] = useState(null);
+  useEffect(() => setZoom(null), [door, chapter]);
+  // Esc closes the enlarged screenshot first, before it would close the room
+  useEffect(() => {
+    if (!zoom) return;
+    const onKey = e => { if (e.key === 'Escape') { e.stopImmediatePropagation(); setZoom(null); } };
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
+  }, [zoom]);
   return (
     <div className="room" style={{ '--accent':door.color, background:`radial-gradient(ellipse at 25% 35%,${door.color}2a,transparent 55%),radial-gradient(ellipse at 85% 80%,#5b3fd622,transparent 60%),#05060f` }}>
       <div className="room-stars" />
       <div className="room-body">
         <div className="room-media">
-          <Visual door={door} chapter={ch} />
+          <Visual door={door} chapter={ch} onZoom={setZoom} />
           <div className="room-caption">{ch.caption}</div>
         </div>
         <div className="room-card glass">
@@ -63,8 +77,8 @@ export default function ProjectRoom({ door, chapter, total, onChapter, onPrev, o
         </div>
       </div>
       <div className="room-bar">
-        <button className="ghost-btn" onClick={onClose}>← Back to space (Esc)</button>
-        <div style={{ display:'flex', gap:8 }}>
+        <button className="ghost-btn" onClick={onClose} aria-label="Back to space">← <span className="back-long">Back to space (Esc)</span><span className="back-short">Back</span></button>
+        <div className="room-dots">
           {door.chapters.map((c, i) => <button key={c.title} aria-label={c.title} onClick={() => onChapter(i)} className="dot" style={{ background:i === chapter ? door.color : 'rgba(255,255,255,.25)' }} />)}
         </div>
         <div style={{ display:'flex', gap:8 }}>
@@ -72,6 +86,12 @@ export default function ProjectRoom({ door, chapter, total, onChapter, onPrev, o
           <button className="primary-btn" onClick={onNext}>{last ? 'Finish' : 'Next'}</button>
         </div>
       </div>
+      {zoom && (
+        <div className="zoom" role="dialog" aria-label={zoom.alt} onClick={() => setZoom(null)}>
+          <img src={zoom.src} alt={zoom.alt} />
+          <button className="icon-btn zoom-close" aria-label="Close">×</button>
+        </div>
+      )}
     </div>
   );
 }

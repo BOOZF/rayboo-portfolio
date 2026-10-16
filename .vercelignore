@@ -1,3 +1,5 @@
 .env
 .env.*
 assets-src
+*.pdf
+*.pptx

@@ -53,3 +53,19 @@ test('answerQuestion rejects empty and over-long questions without calling anyth
   await assert.rejects(answerQuestion('a'.repeat(501), deps), /500/);
   assert.equal(deps.calls.length, 0);
 });
+
+test('answerQuestion asks the model once more when it wrongly says the sections do not cover the question', async () => {
+  // gpt-5-mini sometimes replies NO_ANSWER even with the right section in front of it; a second try usually answers.
+  const replies = [NO_ANSWER, 'He fine-tuned Qwen3 to read credit papers.'], deps = fakeDeps();
+  deps.complete = async ({ question, context }) => { deps.calls.push({ question, context }); return replies.shift(); };
+  assert.equal(await answerQuestion('What did Ray do at AmBank?', deps), 'He fine-tuned Qwen3 to read credit papers.');
+  assert.equal(deps.calls.length, 2);
+});
+
+test('retrieve also finds a section that names a term from the question, even when the embedding misses it', () => {
+  // Embeddings blur acronyms like "MCP": the question vector points at education, but only the skills section names MCP.
+  const withSkills = [...index, { id:'skills', text:'Frameworks: LangGraph, MCP, A2A, Dify', vector:[.3, 0, -.9] }];
+  const hits = retrieve([0, 1, 0], withSkills, { query:'Does he know MCP?' });
+  assert.ok(hits.some(h => h.id === 'skills'), 'skills section retrieved');
+  assert.equal(retrieve([0, 1, 0], withSkills).some(h => h.id === 'skills'), false, 'not found by the embedding alone');
+});

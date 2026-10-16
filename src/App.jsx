@@ -40,6 +40,7 @@ export default function App() {
   }, []);
 
   const W = () => world.current || NO_WORLD;
+  useEffect(() => { W().setWaving(panel === 'contact'); }, [panel, ready]);
   const closeRoom = () => {
     setFlash({ o:1, d:'.35s' });
     setTimeout(() => { W().exitRoom(); setProject(-1); setFlash({ o:0, d:'.7s' }); }, 400);

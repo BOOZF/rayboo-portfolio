@@ -9,7 +9,7 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 import { buildGalaxy } from './galaxy.js';
 import { buildBubbles } from './bubbles.js';
 import { buildWalkway, WALK } from './walkway.js';
-import { rigRay, poseWalk } from './rayRig.js';
+import { rigRay } from './rayRig.js';
 import { makeTex, radialTex } from './textures.js';
 
 const RAY_H = 1.95;
@@ -23,8 +23,8 @@ const wrapAngle = a => ((a % (Math.PI * 2)) + Math.PI * 3) % (Math.PI * 2) - Mat
  * cb: onReady(), onPrompt(i|-1), onEnter(i), onFlash(opacity, duration), onKey(key) for overlay shortcuts.
  */
 export class World {
-  phase = 'intro'; keys = {}; yaw = 0; pitch = .12; vx = 0; vz = 0; speed = 0; amp = 0; stride = 0; lean = 0;
-  jy = 0; vy = 0; land = 0; airB = 0; scale0 = 1; prompt = -1; snap = true; dead = false;
+  phase = 'intro'; keys = {}; yaw = 0; pitch = .12; vx = 0; vz = 0; speed = 0; stride = 0;
+  jy = 0; vy = 0; land = 0; airB = 0; scale0 = 1; prompt = -1; snap = true; dead = false; waving = false;
   stick = { x:0, y:0, run:false }; jumpQueued = false; // touch input (see TouchControls)
   deck = { y:0, halfWidth:1.6, zMin:-40, zMax:10 }; // walkable area until the walkway loads
 
@@ -75,10 +75,10 @@ export class World {
 
   async loadModels() {
     const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
-    const [boy, bubble, walkway] = await Promise.all(['ray-boy', 'bubble', WALK.file].map(n => loader.loadAsync('/assets/' + n + '.glb')));
+    const [boy, bubble, walkway] = await Promise.all(['ray', 'bubble', WALK.file].map(n => loader.loadAsync('/assets/' + n + '.glb')));
     if (this.dead) return;
-    const ray = rigRay(T, boy.scene, this.env);
-    this.scale0 = RAY_H / ray.height; this.holder.add(ray.mesh); this.rig = ray.rig;
+    const ray = this.ray = rigRay(T, boy, this.env);
+    this.scale0 = RAY_H / ray.height; this.holder.add(ray.mesh); this.rig = true;
     const w = buildWalkway(T, this.scene, walkway.scene, this.env);
     this.deck = { y:w.deckY, halfWidth:w.halfWidth, zMin:w.zMin, zMax:w.zMax, zStart:w.zStart };
     this.pods = w.pods;
@@ -120,6 +120,8 @@ export class World {
   look(dx, dy) { if (this.phase !== 'walk') return; this.yaw -= dx * .0022; this.pitch = Math.max(-.35, Math.min(.85, this.pitch + dy * .0022)); }
   setStick(m) { this.stick = m; }
   jump() { if (this.phase === 'walk') this.jumpQueued = true; }
+  // Contact panel open: Ray waves while he is standing still
+  setWaving(on) { this.waving = on; }
   setPrompt(i) { if (i !== this.prompt) { this.prompt = i; this.cb.onPrompt(i); } }
 
   // Ray at the start of the walkway, facing the camera
@@ -174,7 +176,7 @@ export class World {
     this.raf = requestAnimationFrame(this.loop);
     const dt = Math.min(.05, (now - this.last) / 1000), t = now / 1000; this.last = now;
     const R = this.root, k = this.keys;
-    let moving = false, run = false, look = 0, crouch = 0, hop = 0;
+    let moving = false, run = false, crouch = 0, hop = 0;
 
     if (this.phase === 'walk') {
       const st = this.stick, touch = st.x || st.y;
@@ -214,9 +216,7 @@ export class World {
       this.yaw = a.yaw0 + a.dyaw * smooth(Math.min(1, tt / .9)); this.pitch += (-.05 - this.pitch) * damp(3, dt);
       if (tt > .9 && tt < 1.4) hop = Math.sin((tt - .9) / .5 * Math.PI) * .5;
     } else if (this.phase === 'about') {
-      R.rotation.y += wrapAngle(Math.sin(t * .45) * .45 - R.rotation.y) * damp(3, dt); look = Math.sin(t * .6) * .15;
-    } else if (this.phase === 'intro') {
-      look = Math.sin(t * .7) * .28;
+      R.rotation.y += wrapAngle(Math.sin(t * .45) * .3 - R.rotation.y) * damp(3, dt);
     }
     if (this.phase !== 'walk') { this.vx = this.vz = 0; this.speed += ((moving ? 2.2 : 0) - this.speed) * damp(10, dt); }
 
@@ -227,16 +227,16 @@ export class World {
     }
     this.land = Math.max(0, this.land - dt * 4);
 
-    // gait: stride phase advances with distance travelled; lean into turns
-    const prevRot = this.prevRot ?? R.rotation.y; this.prevRot = R.rotation.y;
-    this.amp += (Math.min(1, this.speed / 2.6) - this.amp) * damp(10, dt);
+    // footstep dust and the animation: wave on the home / About / Contact screens, otherwise walk or run by speed
     const prevStride = this.stride; this.stride += this.jy > 0 ? 0 : this.speed * dt / (run ? 1.9 : 1.25);
-    this.lean += (Math.max(-.08, Math.min(.08, -wrapAngle(R.rotation.y - prevRot) / Math.max(dt, .001) * .02)) - this.lean) * damp(8, dt);
     if (this.speed > .6 && this.jy <= 0 && Math.floor(prevStride * 2) !== Math.floor(this.stride * 2)) this.puff(R.position.x + (Math.random() - .5) * .2, R.position.z + (Math.random() - .5) * .2);
     this.airB += ((this.jy > 0 ? 1 : 0) - this.airB) * damp(14, dt);
-    const rn = Math.max(0, Math.min(1, (this.speed - 3.6) / 2)) * this.amp, cr = Math.min(1.2, crouch + this.land * .9);
-    if (this.rig) poseWalk(this.rig, { t, ph:this.stride * Math.PI * 2, a:this.amp, rn, ab:this.airB, cr, vy:this.vy, lean:this.lean, look });
-    const sq = Math.max(-.05, Math.min(.07, this.vy * .014)) * this.airB - .05 * this.land, S = this.scale0;
+    let mode = 'move';
+    if (this.phase === 'intro') mode = 'hello';
+    else if (this.phase === 'about' || (this.waving && this.phase === 'walk' && this.speed < .3)) mode = 'wave';
+    if (mode === 'wave' && this.phase === 'walk') R.rotation.y += wrapAngle(this.yaw - R.rotation.y) * damp(5, dt); // turn to wave at the camera
+    if (this.ray) this.ray.update(dt, { mode, speed:this.jy > 0 ? this.speed * .5 : this.speed, t });
+    const sq = Math.max(-.05, Math.min(.07, this.vy * .014)) * this.airB - .05 * this.land - .06 * crouch, S = this.scale0;
     this.holder.position.y = hop + this.jy;
     this.holder.scale.set(S * (1 - sq * .5), S * (1 + sq), S * (1 - sq * .5));
     this.blob.scale.setScalar(1 / (1 + this.jy * .8)); this.blob.material.opacity = 1 / (1 + this.jy * 1.5);

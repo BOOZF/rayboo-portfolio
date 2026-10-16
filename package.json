@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "test": "node --test 'server/*.test.js' 'src/**/*.test.js'",
     "knowledge": "node scripts/build-knowledge.mjs",
+    "eval:chat": "node scripts/eval-chat.mjs",
     "test:e2e": "playwright test"
   },
   "dependencies": {

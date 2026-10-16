@@ -85,7 +85,7 @@ export default function AboutScreen({ onClose }) {
           <div className="about-label">Player profile</div>
           <div style={{ font:'700 clamp(28px,3vw,38px) Fredoka', lineHeight:1.05 }}>{PROFILE.preferredName}</div>
           <div style={{ fontWeight:700, opacity:.85 }}>{PROFILE.title}</div>
-          <div style={{ fontSize:13, opacity:.7, marginTop:2 }}>{PROFILE.tagline}</div>
+          <div className="about-tagline" style={{ fontSize:13, opacity:.7, marginTop:2 }}>{PROFILE.tagline}</div>
         </div>
         <button className="icon-btn" onClick={onClose} aria-label="Close">×</button>
       </div>
