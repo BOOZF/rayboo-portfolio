@@ -38,3 +38,7 @@ footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);font-si
   .qa,.block{padding:18px}
   h2{font-size:19px}
 }
+.top-actions{display:flex;align-items:center;gap:10px}
+.lang{padding:8px 12px;border-radius:999px;border:1px solid rgba(255,207,138,.5);color:#ffe2b8;font-weight:700;font-size:14px;text-decoration:none}
+.lang:hover{background:rgba(255,207,138,.15);color:#fff}
+:lang(zh-Hans) body{font-family:'Nunito Sans','PingFang SC','Hiragino Sans GB','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif}

@@ -1,15 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://www.boozhengfeng.com/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.boozhengfeng.com/" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.boozhengfeng.com/zh" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.boozhengfeng.com/" />
+  </url>
+  <url>
+    <loc>https://www.boozhengfeng.com/zh</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.boozhengfeng.com/" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.boozhengfeng.com/zh" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.boozhengfeng.com/" />
   </url>
   <url>
     <loc>https://www.boozhengfeng.com/faq</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.boozhengfeng.com/faq" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.boozhengfeng.com/zh/faq" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.boozhengfeng.com/faq" />
+  </url>
+  <url>
+    <loc>https://www.boozhengfeng.com/zh/faq</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.boozhengfeng.com/faq" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.boozhengfeng.com/zh/faq" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.boozhengfeng.com/faq" />
   </url>
   <url>
     <loc>https://www.boozhengfeng.com/privacy</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.boozhengfeng.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.boozhengfeng.com/zh/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.boozhengfeng.com/privacy" />
+  </url>
+  <url>
+    <loc>https://www.boozhengfeng.com/zh/privacy</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.boozhengfeng.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.boozhengfeng.com/zh/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.boozhengfeng.com/privacy" />
   </url>
 </urlset>

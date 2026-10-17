@@ -43,6 +43,21 @@ export function iconUrl(icon, color) {
   return iconCache[k];
 }
 
+// Break text into lines no wider than maxW. Latin words wrap at spaces; Chinese, which has no spaces, can break
+// between any two characters.
+export function wrapText(g, text, maxW) {
+  // tokens: runs of spaces, single Chinese characters, or Latin words; the original spacing is kept
+  const tokens = text.match(/\s+|[\u3000-\u9fff\uff00-\uffef]|[^\s\u3000-\u9fff\uff00-\uffef]+/g) || [];
+  const lines = []; let cur = '';
+  tokens.forEach(tk => {
+    if (/^\s+$/.test(tk)) { if (cur) cur += ' '; return; }
+    const t = cur + tk;
+    if (cur.trim() && g.measureText(t.trimEnd()).width > maxW) { lines.push(cur.trimEnd()); cur = tk; } else cur = t;
+  });
+  if (cur.trim()) lines.push(cur.trimEnd());
+  return lines;
+}
+
 // Floating card inside each bubble: number, title, subtitle and icon on a transparent background.
 export function bubbleLabel(T, door) {
   return makeTex(T, 512, 1024, (g, w) => {
@@ -50,8 +65,7 @@ export function bubbleLabel(T, door) {
     g.font = '700 170px Fredoka'; g.fillText(door.num, w / 2, 250);
     g.shadowColor = 'rgba(0,0,20,.8)'; g.shadowBlur = 14;
     g.font = '700 62px Fredoka';
-    const lines = []; let cur = '';
-    door.title.split(' ').forEach(wd => { const t = cur ? cur + ' ' + wd : wd; if (g.measureText(t).width > 440) { lines.push(cur); cur = wd; } else cur = t; }); lines.push(cur);
+    const lines = wrapText(g, door.title, 440);
     lines.forEach((l, i) => g.fillText(l, w / 2, 350 + i * 68));
     let fs = 34; g.font = '700 ' + fs + 'px "Nunito Sans"';
     while (g.measureText(door.sub).width > 450 && fs > 22) { fs -= 2; g.font = '700 ' + fs + 'px "Nunito Sans"'; }

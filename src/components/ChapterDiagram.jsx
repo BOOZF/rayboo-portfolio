@@ -1,3 +1,4 @@
+import { T } from '../i18n.js';
 // Drawn visuals for chapters that have no screenshot. A chapter sets `diagram: { type, ... }`:
 //   flow    { steps:[{ label, sub }] }                      boxes joined by arrows
 //   bars    { title, rows:[{ label, value, display, dim }] } horizontal percentage bars
@@ -59,7 +60,7 @@ function Builder({ name, fields }) {
           <div className="dg-chips">{f.items.map(x => <span key={x} className="dg-chip">{x}</span>)}</div>
         </div>
       ))}
-      <div className="dg-builder-foot"><span className="dg-btn">Deploy agent</span></div>
+      <div className="dg-builder-foot"><span className="dg-btn">{T.deployAgent}</span></div>
     </div>
   );
 }

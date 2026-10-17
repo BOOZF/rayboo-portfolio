@@ -69,3 +69,11 @@ test('retrieve also finds a section that names a term from the question, even wh
   assert.ok(hits.some(h => h.id === 'skills'), 'skills section retrieved');
   assert.equal(retrieve([0, 1, 0], withSkills).some(h => h.id === 'skills'), false, 'not found by the embedding alone');
 });
+
+test('on the Chinese site the "no answer" reply and input errors are in Chinese', async () => {
+  const deps = fakeDeps();
+  const reply = await answerQuestion('What is the weather today?', deps, { lang:'zh' });
+  assert.match(reply, /[一-鿿]/);
+  assert.match(reply, /zhengfengboo0710@gmail\.com/);
+  await assert.rejects(answerQuestion('   ', deps, { lang:'zh' }), /[一-鿿]/);
+});

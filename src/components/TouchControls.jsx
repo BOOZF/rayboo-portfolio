@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { joystick } from '../scene/joystick.js';
+import { T } from '../i18n.js';
 
 const RADIUS = 56, LOOK_SPEED = 1.6;
 
@@ -44,7 +45,7 @@ export default function TouchControls({ world }) {
           <div className="stick-knob" style={{ transform:`translate(${stick.knob.x - stick.start.x}px, ${stick.knob.y - stick.start.y}px)` }} />
         </div>
       )}
-      <button className="touch-btn touch-jump" onPointerDown={e => { e.stopPropagation(); world().jump(); }} aria-label="Jump">⤒<span>Jump</span></button>
+      <button className="touch-btn touch-jump" onPointerDown={e => { e.stopPropagation(); world().jump(); }} aria-label={T.jump}>⤒<span>{T.jump}</span></button>
     </>
   );
 }

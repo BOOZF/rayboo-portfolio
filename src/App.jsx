@@ -12,6 +12,7 @@ import Flash from './components/Flash.jsx';
 import AskRay from './components/AskRay.jsx';
 import TouchControls from './components/TouchControls.jsx';
 import useTouchDevice from './components/useTouchDevice.js';
+import { T } from './i18n.js';
 
 // Stand-in until the 3D chunk has loaded: any call on it is a harmless no-op.
 const NO_WORLD = new Proxy({}, { get:() => () => {} });
@@ -64,10 +65,10 @@ export default function App() {
   });
 
   const nav = [
-    { label:'Home', key:'home', go:() => { W().goHome(); setStarted(false); setPanel(''); } },
-    { label:'About', key:'about', go:togglePanel('about') },
-    { label:'Projects', key:'projects', go:togglePanel('projects') },
-    { label:'Contact', key:'contact', go:togglePanel('contact') },
+    { label:T.home, key:'home', go:() => { W().goHome(); setStarted(false); setPanel(''); } },
+    { label:T.about, key:'about', go:togglePanel('about') },
+    { label:T.projects, key:'projects', go:togglePanel('projects') },
+    { label:T.contact, key:'contact', go:togglePanel('contact') },
   ];
   const inRoom = project >= 0;
 

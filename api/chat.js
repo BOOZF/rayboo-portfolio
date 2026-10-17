@@ -5,4 +5,4 @@ import { openaiDeps } from '../server/openai.js';
 import index from '../knowledge/index.js';
 
 const deps = openaiDeps({ key:process.env.OPENAI_API_KEY, model:process.env.OPENAI_MODEL || 'gpt-5-mini', index });
-export default createChatHandler({ answer:q => answerQuestion(q, deps) });
+export default createChatHandler({ answer:(q, lang) => answerQuestion(q, deps, { lang }) });

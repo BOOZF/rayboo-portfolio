@@ -50,3 +50,15 @@ test('an OpenAI failure becomes a 502 with a friendly message, not a crash', asy
   assert.equal(res.statusCode, 502);
   assert.match(res.body.error, /try again/i);
 });
+
+test('from the Chinese site, the language reaches the answerer and error messages come back in Chinese', async () => {
+  let gotLang;
+  const handler = createChatHandler({ answer:async (q, lang) => { gotLang = lang; return '他领导了 AI 团队。'; }, now:() => 0 });
+  await send(handler, request('POST', { question:'他在 CMG 做什么？', lang:'zh' }, '7.7.7.7'));
+  assert.equal(gotLang, 'zh');
+  for (let i = 0; i < 9; i++) await send(handler, request('POST', { question:'hi', lang:'zh' }, '7.7.7.7'));
+  const limited = await send(handler, request('POST', { question:'hi', lang:'zh' }, '7.7.7.7'));
+  assert.equal(limited.statusCode, 429);
+  assert.match(limited.body.error, /[一-鿿]/);
+  assert.match((await send(handler, request('POST', { lang:'zh' }, '8.8.8.8'))).body.error, /[一-鿿]/);
+});

@@ -1,4 +1,4 @@
-html,body,#root{margin:0;height:100%;overflow:hidden;background:#03040c;font-family:'Nunito Sans',sans-serif;color:#f1efff}
+html,body,#root{margin:0;height:100%;overflow:hidden;background:#03040c;font-family:'Nunito Sans','PingFang SC','Hiragino Sans GB','Noto Sans SC','Microsoft YaHei',sans-serif;color:#f1efff}
 a{color:#ffcf8a}a:hover{color:#fff}
 button{font-family:inherit}
 button:focus-visible,a:focus-visible{outline:2px solid #ffcf8a;outline-offset:2px}
@@ -6,7 +6,9 @@ button:focus-visible,a:focus-visible{outline:2px solid #ffcf8a;outline-offset:2p
 .glass{background:rgba(10,12,32,.62);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(160,175,255,.18);border-radius:16px}
 .avatar{width:56px;height:56px;border-radius:50%;flex:none;object-fit:cover;background:radial-gradient(circle at 50% 35%,#3a4878,#1b2140);border:2px solid rgba(255,207,138,.6)}
 
-.sidebar{position:absolute;top:20px;left:20px;width:230px;display:flex;flex-direction:column;gap:18px;z-index:6}
+.sidebar{position:absolute;top:20px;left:20px;width:250px;display:flex;flex-direction:column;gap:18px;z-index:6}
+.lang-switch{margin-left:auto;align-self:flex-start;padding:5px 11px;border-radius:999px;border:1px solid rgba(255,207,138,.5);background:rgba(10,12,32,.55);color:#ffe2b8;font-size:13px;font-weight:800;text-decoration:none;white-space:nowrap}
+.lang-switch:hover{background:rgba(255,207,138,.18);color:#fff}
 .nav-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:none;cursor:pointer;text-align:left;font-size:14px;font-weight:700;color:#f1efff;background:transparent}
 .nav-btn:hover{background:rgba(140,150,255,.18)}
 .nav-btn.active{background:rgba(120,110,255,.35)}

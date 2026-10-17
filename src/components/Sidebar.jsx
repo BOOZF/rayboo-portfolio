@@ -1,4 +1,5 @@
 import { PROFILE } from '../content/profile.js';
+import { LANG, T, otherLangPath } from '../i18n.js';
 
 export default function Sidebar({ nav, active, showProjects, doors, onTeleport }) {
   return (
@@ -7,9 +8,10 @@ export default function Sidebar({ nav, active, showProjects, doors, onTeleport }
         <img src="/assets/ray-headshot.webp" alt={PROFILE.preferredName} width={56} height={56} className="avatar" />
         <div style={{ display:'flex', flexDirection:'column', gap:2, textShadow:'0 2px 8px rgba(0,0,0,.6)' }}>
           <div style={{ font:'700 24px Fredoka', lineHeight:1 }}>{PROFILE.preferredName}</div>
-          <div style={{ fontSize:13, fontWeight:700 }}>{PROFILE.title}</div>
+          <div style={{ fontSize:13, fontWeight:700, whiteSpace:'nowrap' }}>{PROFILE.title}</div>
           <div style={{ fontSize:11, opacity:.8 }}>{PROFILE.fullName}</div>
         </div>
+        <a className="lang-switch" href={otherLangPath()} hrefLang={LANG === 'zh' ? 'en' : 'zh-Hans'} lang={LANG === 'zh' ? 'en' : 'zh-Hans'} aria-label={T.switchLabel}>{T.switchTo}</a>
       </div>
       <nav className="glass" style={{ display:'flex', flexDirection:'column', gap:4, padding:8 }}>
         {nav.map(n => (

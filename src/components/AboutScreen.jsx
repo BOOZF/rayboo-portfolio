@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { PROFILE, JOURNEY, SKILLS, EDUCATION, HIGHLIGHTS } from '../content/profile.js';
 import { iconUrl } from '../scene/textures.js';
+import { T } from '../i18n.js';
 
 const TABS = ['Profile', 'Journey', 'Skills', 'Education', 'Highlights'];
 
@@ -10,11 +11,11 @@ function Profile() {
       <div style={{ display:'flex', gap:16, alignItems:'center' }}>
         <img src={PROFILE.portrait} alt={PROFILE.fullName} className="about-portrait" />
         <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
-          <div className="about-label">Preferred name</div><div style={{ font:'700 22px Fredoka' }}>{PROFILE.preferredName}</div>
-          <div className="about-label" style={{ marginTop:6 }}>Full name</div><div style={{ fontWeight:700 }}>{PROFILE.fullName}</div>
+          <div className="about-label">{T.preferredName}</div><div style={{ font:'700 22px Fredoka' }}>{PROFILE.preferredName}</div>
+          <div className="about-label" style={{ marginTop:6 }}>{T.fullName}</div><div style={{ fontWeight:700 }}>{PROFILE.fullName}</div>
         </div>
       </div>
-      <div className="about-label">What I bring</div>
+      <div className="about-label">{T.whatIBring}</div>
       <div className="strengths">{PROFILE.strengths.map(s => (
         <div key={s.title} className="strength">
           <img src={iconUrl(s.icon, '#ffcf8a')} alt="" width={34} height={34} />
@@ -82,15 +83,15 @@ export default function AboutScreen({ onClose }) {
     <div className="about-panel glass">
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:12 }}>
         <div>
-          <div className="about-label">Player profile</div>
+          <div className="about-label">{T.playerProfile}</div>
           <div style={{ font:'700 clamp(28px,3vw,38px) Fredoka', lineHeight:1.05 }}>{PROFILE.preferredName}</div>
           <div style={{ fontWeight:700, opacity:.85 }}>{PROFILE.title}</div>
           <div className="about-tagline" style={{ fontSize:13, opacity:.7, marginTop:2 }}>{PROFILE.tagline}</div>
         </div>
-        <button className="icon-btn" onClick={onClose} aria-label="Close">×</button>
+        <button className="icon-btn" onClick={onClose} aria-label={T.close}>×</button>
       </div>
       <div className="tabs" role="tablist">
-        {TABS.map(t => <button key={t} role="tab" aria-selected={tab === t} className={'tab' + (tab === t ? ' active' : '')} onClick={() => setTab(t)}>{t}</button>)}
+        {TABS.map(t => <button key={t} role="tab" aria-selected={tab === t} className={'tab' + (tab === t ? ' active' : '')} onClick={() => setTab(t)}>{T.tabs[t]}</button>)}
       </div>
       <div className="about-body"><Pane /></div>
     </div>

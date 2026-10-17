@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { iconUrl } from '../scene/textures.js';
 import ChapterDiagram from './ChapterDiagram.jsx';
+import { T } from '../i18n.js';
 
 // Screenshot area for one chapter: phone screens sit side by side, wide shots and photos fill the frame.
 // A chapter without its own screenshot but with a `highlight` shows the key result over the project's screenshots, dimmed.
@@ -28,11 +29,11 @@ function Visual({ door, chapter, onZoom }) {
   return (
     <div className={'room-visual' + (imgs[0].kind === 'phone' ? ' phones' : '')}>
       {imgs.map(im => (
-        <button key={im.src} type="button" className={'shot-btn ' + im.kind} onClick={() => onZoom(im)} aria-label={'Enlarge: ' + im.alt}>
+        <button key={im.src} type="button" className={'shot-btn ' + im.kind} onClick={() => onZoom(im)} aria-label={T.enlargeLabel + im.alt}>
           <img src={im.src} alt={im.alt} className={'shot ' + im.kind} loading="lazy" />
         </button>
       ))}
-      <span className="zoom-hint" aria-hidden="true">⤢ Enlarge</span>
+      <span className="zoom-hint" aria-hidden="true">{T.enlarge}</span>
     </div>
   );
 }
@@ -58,7 +59,7 @@ export default function ProjectRoom({ door, chapter, total, onChapter, onPrev, o
         <div className="room-card glass">
           <div style={{ display:'flex', alignItems:'baseline', gap:12, flexWrap:'wrap' }}>
             <span style={{ font:'700 40px Fredoka', color:door.color }}>{door.num}</span>
-            <span style={{ font:'600 13px Fredoka', letterSpacing:'.2em', opacity:.7 }}>CHAPTER {chapter + 1} / {total}</span>
+            <span style={{ font:'600 13px Fredoka', letterSpacing:'.2em', opacity:.7 }}>{T.chapter(chapter + 1, total)}</span>
           </div>
           <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
             <div style={{ font:'700 clamp(26px,3.2vw,40px) Fredoka', lineHeight:1.05 }}>{door.title}</div>
@@ -77,19 +78,19 @@ export default function ProjectRoom({ door, chapter, total, onChapter, onPrev, o
         </div>
       </div>
       <div className="room-bar">
-        <button className="ghost-btn" onClick={onClose} aria-label="Back to space">← <span className="back-long">Back to space (Esc)</span><span className="back-short">Back</span></button>
+        <button className="ghost-btn" onClick={onClose} aria-label={T.backLabel}>← <span className="back-long">{T.backLong}</span><span className="back-short">{T.backShort}</span></button>
         <div className="room-dots">
           {door.chapters.map((c, i) => <button key={c.title} aria-label={c.title} onClick={() => onChapter(i)} className="dot" style={{ background:i === chapter ? door.color : 'rgba(255,255,255,.25)' }} />)}
         </div>
         <div style={{ display:'flex', gap:8 }}>
-          <button className="ghost-btn" onClick={onPrev} disabled={chapter === 0}>Prev</button>
-          <button className="primary-btn" onClick={onNext}>{last ? 'Finish' : 'Next'}</button>
+          <button className="ghost-btn" onClick={onPrev} disabled={chapter === 0}>{T.prev}</button>
+          <button className="primary-btn" onClick={onNext}>{last ? T.finish : T.next}</button>
         </div>
       </div>
       {zoom && (
         <div className="zoom" role="dialog" aria-label={zoom.alt} onClick={() => setZoom(null)}>
           <img src={zoom.src} alt={zoom.alt} />
-          <button className="icon-btn zoom-close" aria-label="Close">×</button>
+          <button className="icon-btn zoom-close" aria-label={T.close}>×</button>
         </div>
       )}
     </div>

@@ -116,3 +116,20 @@ test('home screen layout fits without overlaps, down to a 320px-wide phone', asy
     }
   }
 });
+
+// The Chinese site lives at /zh: interface, projects and chat are in Chinese, and EN switches back to the same page in English.
+test('the Chinese site shows Chinese text throughout and switches back to English', async ({ page }) => {
+  await page.goto('/zh');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'zh-Hans');
+  await page.getByRole('button', { name:/开始旅程/ }).waitFor();
+  await expect(page.getByRole('button', { name:'关于我', exact:true })).toBeVisible();
+  await page.getByRole('button', { name:'项目', exact:true }).click();
+  await expect(page.getByText('银行信贷文件 AI')).toBeVisible();
+  await page.getByRole('button', { name:'项目', exact:true }).click();
+  await page.locator('.ask-fab').click();
+  await expect(page.getByText('你好！我是 Ray 的助手。', { exact:false })).toBeVisible();
+  await page.locator('.ask-fab').click();
+  await page.getByRole('link', { name:'Switch to English' }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole('button', { name:/Start journey/ })).toBeVisible();
+});
