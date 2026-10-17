@@ -13,7 +13,7 @@ After the R&D phase, the founder formed a dedicated AI team and hand-picked Ray 
 Ray built a code-generation AI that converts large PostgreSQL tables (around 1,000 records) into JSON-formatted table documentation with column and field descriptions. He also developed internal prototypes that automate routine developer tasks and improve productivity.
 
 ## AI Solution Architect at Huawei (Sep 2025 – present)
-At Huawei's APAC Enterprise group Ray's remit widened beyond writing code: he owns the technical solution end to end and puts it in front of clients. He builds the POC, demos it to clients and defends the technical design, and maps it to the Huawei product stack and NPU hardware, alongside Huawei's Head of AI. Projects: the MyGOV AI Assistant (government super app), Water-Treatment Plant SCADA AI, AmBank credit-paper automation (banking), and an internal sales intelligence platform and management tools.
+At Huawei's APAC Enterprise group Ray's remit widened beyond writing code: he owns the technical solution end to end and puts it in front of clients. He builds the POC, demos it to clients and defends the technical design, and maps it to the Huawei product stack and NPU hardware, alongside Huawei's Head of AI. Projects: the MyGOV AI Assistant (government super app), Water-Treatment Plant SCADA AI, bank credit-paper automation (banking), and an internal sales intelligence platform and management tools.
 
 ## Speaking and judging
 Ray represented Huawei as an invited judge and speaker at the AI Singapore Hackathon at the National University of Singapore (NUS). He evaluated student and startup teams on the judging panel and shared an industry perspective with the AI community on stage.

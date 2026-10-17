@@ -1,5 +1,5 @@
 export default {
-  id:'agent-builder', title:'No-Code Agent Builder', sub:'Internal platform for self-serve AI agents', era:'CMG Technologies · 2025',
+  id:'agent-builder', title:'No-Code Agent Builder', sub:'Internal platform for self-serve AI agents', era:'Internal platform · 2025',
   color:'#4fe3e3', icon:'chip', role:'AI Team Lead', tags:['mastra-ai', 'RAG', 'TypeScript', 'Multi-agent', 'LangGraph'],
   chapters:[
     { title:'The Problem', text:'Once the first bots shipped, requests for AI came from every department, and a single AI team could not build a custom agent for each one.',

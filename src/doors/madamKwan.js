@@ -1,6 +1,6 @@
 const img = f => '/assets/doors/madam-kwan/' + f;
 export default {
-  id:'madam-kwan', title:"Madam Kwan's Mini Program", sub:'Customer ordering & rewards app', era:'CMG Technologies · 2024–2025',
+  id:'madam-kwan', title:"Madam Kwan's Mini Program", sub:'Customer ordering & rewards app', era:'Restaurant app · 2024–2025',
   color:'#ff6b6b', icon:'bag', role:'Full-stack developer → deployment lead', tags:['Next.js', 'React', 'Kubernetes', 'CI/CD', 'Back office'],
   link:{ url:'https://emp.cmg.com.my/home', label:"Open Madam Kwan's mini program" },
   chapters:[

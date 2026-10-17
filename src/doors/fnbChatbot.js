@@ -1,6 +1,6 @@
 const img = f => '/assets/doors/fnb-chatbot/' + f;
 export default {
-  id:'fnb-chatbot', title:'F&B Service Chatbot', sub:'WhatsApp AI for POS customer service', era:'CMG Technologies · 2024–2025',
+  id:'fnb-chatbot', title:'F&B Service Chatbot', sub:'WhatsApp AI for POS customer service', era:'F&B point of sale · 2024–2025',
   color:'#ffb84d', icon:'chat', role:'AI Team Lead', tags:['WhatsApp', 'LLM', 'Tool calling', 'Self-hosted LLMs', 'TypeScript', 'Python'],
   chapters:[
     { title:'The Problem', text:'Restaurants on our F&B point-of-sale system were answering every WhatsApp message by hand: orders, menu questions, allergy checks and complaints all landed on the same small customer-service team.',

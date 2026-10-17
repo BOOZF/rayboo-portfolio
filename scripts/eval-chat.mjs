@@ -17,7 +17,7 @@ const COVERED = [
   ['What did he build during his internship?', ['blood']], ['Tell me about the internal productivity tools', ['postgresql']],
   ['Tell me about the WhatsApp chatbot', ['whatsapp']], ['What is the no-code agent builder?', ['agent']], ["What did he do for Madam Kwan's?", ['mini program']],
   ['Tell me about RunForPeace', ['1']], ['Tell me about the form app', ['react native']], ['What is the sales dashboard?', ['pricing']],
-  ['Tell me about MyGOV', ['aws']], ['What is the SCADA project?', ['root']], ['What did he do for AmBank?', ['80']], ['What is the sales intelligence platform?', ['xgboost']],
+  ['Tell me about MyGOV', ['ui']], ['What is the SCADA project?', ['root']], ['What did he do for the bank on credit papers?', ['80']], ['What is the sales intelligence platform?', ['xgboost']],
   ['What internal management tools did he build?', ['risk']], ['Where did he study?', ['tarumt']], ['What was his CGPA?', ['3.74']], ['Did he get any awards?', ["president"]],
   ['Did he do any sports at university?', ['badminton']], ['Has he spoken at events?', ['nus']], ['Which industries has he worked in?', ['bank']],
   ['How can I contact Ray?', ['zhengfengboo0710@gmail.com']], ['Where is Ray based?', ['kuala lumpur']], ['Has he led a team?', ['lead']],

@@ -9,7 +9,7 @@ export default defineConfig({
   expect:{ timeout:20_000 },
   workers:1,
   use:{ baseURL:'http://localhost:5181', launchOptions:{ args:['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] } },
-  webServer:{ command:'pnpm exec vite --port 5181 --strictPort', url:'http://localhost:5181', reuseExistingServer:true, timeout:60_000 },
+  webServer:{ command:'pnpm exec vite --port 5181 --strictPort --mode e2e', url:'http://localhost:5181', reuseExistingServer:true, timeout:60_000 },
   projects:[
     { name:'phone', use:touch('iPhone 13') },
     { name:'phone-landscape', use:touch('iPhone 13 landscape') },

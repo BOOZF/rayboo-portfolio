@@ -47,6 +47,8 @@ const seoPages = () => ({
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => ({
   plugins: [react(), devApi(mode), seoPages()],
+  // the e2e server keeps its own dependency cache: two dev servers sharing one re-optimise it under each other and stall page loads
+  cacheDir: mode === 'e2e' ? 'node_modules/.vite-e2e' : undefined,
   build: {
     // hashed build output gets its own folder so it can be cached forever, apart from the un-hashed models in /assets
     assetsDir: '_app',

@@ -1,6 +1,6 @@
 const img = f => '/assets/doors/scada/' + f;
 export default {
-  id:'scada', title:'Water-Treatment SCADA AI', sub:'Root-cause analysis for plant operators', era:'Huawei APAC · 2025',
+  id:'scada', title:'Water-Treatment SCADA AI', sub:'Root-cause analysis for plant operators', era:'Government utilities · 2025',
   color:'#4fb3ff', icon:'drop', role:'AI solution & live demo', tags:['Dify', 'RCA workflow', 'LLM + RAG', 'SCADA', 'Anomaly detection'],
   chapters:[
     { title:'The Problem', text:'At a government water-treatment plant, abnormal incidents arrive as floods of SCADA alarms. Engineers had to trace each one manually through sensor data and old incident records before they could act.',

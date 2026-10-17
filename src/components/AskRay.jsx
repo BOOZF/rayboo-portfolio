@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-const SUGGESTIONS = ['What does Ray do at Huawei?', 'What did he achieve at AmBank?', 'What is his tech stack?'];
+const SUGGESTIONS = ['What does Ray do?', 'What did he achieve on bank credit papers?', 'What is his tech stack?'];
 const MAX = 500;
 
 // Floating "Ask about Ray" chat. Answers come from /api/chat, which only uses the files in knowledge/.

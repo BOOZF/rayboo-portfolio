@@ -13,15 +13,15 @@ export const PROFILE = {
   ],
   // "What I bring": each strength backed by one piece of proof from the projects
   strengths:[
-    { icon:'spark', title:'Ships end to end', text:'From messy data and models to the UI a client clicks through. On MyGOV the client adopted my UI, UX flow and design even though the cloud deal went to AWS.' },
-    { icon:'chip', title:'Production AI under real constraints', text:'Self-hosted LLMs on GPU servers with vLLM, and a Qwen3 fine-tune on limited GPUs that lifted AmBank credit-paper extraction from about 30% to 80%.' },
+    { icon:'spark', title:'Ships end to end', text:'From messy data and models to the UI a client clicks through. On MyGOV the client adopted my UI, UX flow and design even though the cloud contract went to another provider.' },
+    { icon:'chip', title:'Production AI under real constraints', text:'Self-hosted LLMs on GPU servers with vLLM, and a Qwen3 fine-tune on limited GPUs that lifted bank credit-paper extraction from about 30% to 80%.' },
     { icon:'chat', title:'Leads and translates', text:'Hand-picked to lead a new AI team; today I run POCs, live client demos and pre-sales, turning business needs into AI that ships.' },
   ],
 };
 
 export const JOURNEY = [
   { when:'Sep 2025 – now', role:'AI Solution Architect', org:'Huawei Technologies · APAC Enterprise (EBG)',
-    points:['POCs, client demos and pre-sales solutioning across government, industrial and banking AI', 'MyGOV super app, water-treatment SCADA AI, AmBank credit papers, internal sales intelligence'] },
+    points:['POCs, client demos and pre-sales solutioning across government, industrial and banking AI', 'MyGOV super app, water-treatment SCADA AI, bank credit papers, internal sales intelligence'] },
   { when:'Jan 2025 – Aug 2025', role:'AI Software Developer · Team Lead', org:'CMG Technologies (CMGI)',
     points:['Hand-picked to lead the new AI team: stakeholder management, delivery ownership and business ↔ AI translation', 'WhatsApp AI chatbot, no-code agent builder, mini program back office (Next.js, Kubernetes)', 'Code-generation AI that documents large PostgreSQL tables as JSON', 'Self-hosted LLMs on GPU servers with vLLM, Ollama and llama.cpp'] },
   { when:'Jun 2024 – Nov 2024', role:'AI Software Developer · Intern', org:'CMG Technologies (CMGI)',

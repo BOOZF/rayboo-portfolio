@@ -1,4 +1,4 @@
-// Bubble order = career order: CMG first, then Huawei. Add or reorder doors here only.
+// Bubble order = career order: first job first, then the current one. Add or reorder doors here only.
 import fnbChatbot from './fnbChatbot.js';
 import agentBuilder from './agentBuilder.js';
 import madamKwan from './madamKwan.js';
