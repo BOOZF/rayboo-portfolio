@@ -10,6 +10,6 @@ export default {
       bullets:['Frontend and backend integration for the customer mini program', 'Built and maintained the back-office frontend in Next.js and React', 'Led deployment and staging on Kubernetes', 'Optimised UI components for performance'],
       caption:'"Menu, pickup and rewards, one tap apart."', images:[{ src:img('menu.webp'), alt:'Pickup ordering menu screen', kind:'phone' }, { src:img('rewards.webp'), alt:'Rewards and cash voucher screen', kind:'phone' }] },
     { title:'The Impact', text:'A shipped customer-facing product, live with real diners and ordering, rewards and profiles end to end, which taught me production delivery on Kubernetes.',
-      caption:'"Shipped, and in customers\' pockets."', images:[{ src:img('profile.webp'), alt:'Customer profile screen', kind:'phone' }] },
+      caption:'"Shipped, and in customers\' pockets."', images:[{ src:img('profile-screen.webp'), alt:'Customer profile screen', kind:'phone' }] },
   ],
 };
